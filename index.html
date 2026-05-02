@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConfidentialVoteDAO — Powered by Zama fhEVM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🗳</div>
+    ConfidentialVote<span class="dim">DAO</span>
+  </div>
+  <div class="header-right">
+    <span class="badge">ZAMA fhEVM</span>
+    <span class="badge">SEPOLIA</span>
+    <button id="connectBtn">Connect Wallet</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-eyebrow">Powered by Fully Homomorphic Encryption</div>
+    <h1>Governance Votes<br><span class="highlight">Nobody Can See</span></h1>
+    <p>Individual votes are encrypted using FHE. No bribery. No coercion. No front-running. Only the final tally is ever revealed.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-value" id="statProposals">0</span><span class="stat-label">Proposals</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-value">FHE</span><span class="stat-label">Encryption</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-value">✓</span><span class="stat-label">On-chain</span></div>
+    </div>
+  </section>
+
+  <div class="fhe-banner">
+    <div class="fhe-icon">🔐</div>
+    <div>
+      <h3>How FHE Makes This Possible</h3>
+      <p>Your vote is encrypted client-side using the Zama network's FHE public key before it leaves your browser. The contract accumulates encrypted votes using <code>FHE.add()</code>. After voting ends, Zama's threshold MPC decrypts only the aggregate tally. Individual votes are mathematically impossible to recover.</p>
+    </div>
+  </div>
+
+  <div class="section-label">// How It Works</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><div class="step-icon">📝</div><h3>Create Proposal</h3><p>DAO members submit governance proposals publicly.</p></div>
+    <div class="step"><div class="step-num">02</div><div class="step-icon">🔒</div><h3>Encrypt Vote</h3><p>Browser encrypts your ballot locally using Zama FHE.</p></div>
+    <div class="step"><div class="step-num">03</div><div class="step-icon">⛓</div><h3>Submit Onchain</h3><p>Encrypted vote added to tally via <code>FHE.add()</code>.</p></div>
+    <div class="step"><div class="step-num">04</div><div class="step-icon">🎯</div><h3>Reveal Result</h3><p>Zama KMS decrypts the final tally only. Individual votes stay secret forever.</p></div>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-header"><span>📋</span> Create Proposal</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label>Proposal Title</label>
+          <input type="text" id="propTitle" placeholder="e.g. Allocate 5 ETH to treasury" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="propDesc" placeholder="Describe what this proposal aims to achieve..."></textarea>
+        </div>
+        <button class="btn btn-primary" id="createBtn">Submit Proposal</button>
+        <div class="enc-visual">
+          <div class="enc-dot"></div>
+          Proposals are public · Votes are FHE-encrypted · Results revealed after close
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><span>🔗</span> Contract Info</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label>Contract Address (Sepolia)</label>
+          <input type="text" id="contractAddress" placeholder="Paste deployed contract address..." />
+        </div>
+        <div class="form-group">
+          <label>Your Address</label>
+          <input type="text" id="userAddress" readonly placeholder="Connect wallet to see address" />
+        </div>
+        <div class="form-group">
+          <label>Member Status</label>
+          <input type="text" id="memberStatus" readonly placeholder="—" />
+        </div>
+        <div class="form-group">
+          <label>FHE Status</label>
+          <input type="text" id="fheStatus" readonly placeholder="Not initialized" />
+        </div>
+        <button class="btn btn-ghost" id="refreshBtn">🔄 Refresh Proposals</button>
+        <div style="margin-top:1.4rem;">
+          <div class="section-label">// Add Member (Owner Only)</div>
+          <div style="display:flex;gap:8px;margin-top:0.5rem;">
+            <input type="text" id="newMemberAddr" placeholder="0x... address" />
+            <button class="btn btn-ghost" id="addMemberBtn" style="white-space:nowrap;">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">// Active & Past Proposals</div>
+  <div id="proposalsList">
+    <div class="empty-state">Connect wallet and enter contract address to load proposals</div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<!-- Vite entry point -->
+<script type="module" src="./main.js"></script>
+</body>
+</html>
