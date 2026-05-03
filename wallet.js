@@ -128,8 +128,13 @@ export function registerListeners({ onAccountChange, onChainChange }) {
   if (!window.ethereum) return;
 
   window.ethereum.on("accountsChanged", async () => {
-    await resync();
-    onAccountChange?.();
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+
+    state.provider = provider;
+    state.address = await signer.getAddress();
+
+    console.log("Switched to:", state.address);
   });
 
   window.ethereum.on("chainChanged", async () => {

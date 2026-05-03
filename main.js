@@ -16,7 +16,6 @@ import {
   markResultDecryptable,
   finalizeResult,
   addMember,
-  resetContract,
 } from "./contract.js";
 import { showToast, setButtonLoading, renderProposalCard } from "./ui.js";
 
@@ -255,7 +254,7 @@ async function handleAddMember() {
     newMemberAddrEl.value = "";
     await updateMembership();
   } catch (e) {
-    showToast("Failed: " + (e.reason || e.message), "error");
+    showToast("Failed: Not an Admin" , "error");
   }
 }
 
