@@ -106,18 +106,22 @@ export function renderProposalCard(p, i, voted, onVote, onMark, onFinalize) {
     const btn = document.createElement("button");
     btn.className = "btn btn-ghost";
     btn.textContent = "🔓 Decrypt & Finalize";
-    btn.addEventListener("click", () => onFinalize(i));
+    btn.addEventListener("click", () => onFinalize(i, btn));
     actionsDiv.appendChild(btn);
   } else if (isActive && !voted) {
     const yesBtn = document.createElement("button");
     yesBtn.className = "btn btn-yes";
     yesBtn.textContent = "🔐 Vote YES";
-    yesBtn.addEventListener("click", () => onVote(i, true));
+    yesBtn.addEventListener("click", (e) => {
+      onVote(i, true, yesBtn); // pass button
+    });
 
     const noBtn = document.createElement("button");
     noBtn.className = "btn btn-no";
     noBtn.textContent = "🔐 Vote NO";
-    noBtn.addEventListener("click", () => onVote(i, false));
+    noBtn.addEventListener("click", (e) => {
+      onVote(i, false, noBtn); // pass button
+    });
 
     const row = document.createElement("div");
     row.className = "vote-actions";
@@ -128,7 +132,7 @@ export function renderProposalCard(p, i, voted, onVote, onMark, onFinalize) {
     const btn = document.createElement("button");
     btn.className = "btn btn-ghost";
     btn.textContent = "🔓 Close & Mark Decryptable";
-    btn.addEventListener("click", () => onMark(i));
+    btn.addEventListener("click", () => onMark(i, btn));
     actionsDiv.appendChild(btn);
   }
 

@@ -21,7 +21,7 @@ import { showToast, setButtonLoading, renderProposalCard } from "./ui.js";
 
 // ── Contract address ──────────────────────────────────────────────────────────
 // PASTE YOUR DEPLOYED SEPOLIA CONTRACT ADDRESS HERE
-let contractAddress = "0x1B613A0a2bA99fafa82bCAeE8CC79552BDe08f5c";
+let contractAddress = "0x7D323C83D420f78CBb786c2fdA5F616c6Ea46770";
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const connectBtn = document.getElementById("connectBtn");
@@ -172,11 +172,14 @@ async function handleCreateProposal() {
   }
 }
 
-async function handleVote(proposalId, voteYes) {
+async function handleVote(proposalId, voteYes, btn) {
   if (!state.instance) {
     showToast("FHE not ready — wait a moment and try again", "error");
     return;
   }
+
+  setButtonLoading(btn, true, voteYes ? "🔐 Vote YES" : "🔐 Vote NO");
+
   showToast("🔐 Initializing FHE encryption...", "info");
   try {
     showToast("🔐 Encrypting your vote locally...", "info");
@@ -197,14 +200,19 @@ async function handleVote(proposalId, voteYes) {
     else if (msg.includes("SenderNotAllowed"))
       showToast("ACL error — check contract address is correct", "error");
     else showToast("Vote failed: " + msg, "error");
+  }finally{
+    setButtonLoading(btn, false, voteYes ? "🔐 Vote YES" : "🔐 Vote NO");
   }
 }
 
-async function handleMarkDecryptable(proposalId) {
+async function handleMarkDecryptable(proposalId, btn) {
   if (!state.signer) {
     showToast("Connect wallet first", "error");
     return;
   }
+
+    setButtonLoading(btn, true, "🔓 Close & Mark Decryptable");
+
   showToast("Closing voting...", "info");
   try {
     await markResultDecryptable(proposalId, contractAddress);
@@ -212,14 +220,19 @@ async function handleMarkDecryptable(proposalId) {
     await loadProposals();
   } catch (e) {
     showToast("Failed: " + (e.reason || e.message), "error");
+  }finally{
+    setButtonLoading(btn, false, "🔓 Close & Mark Decryptable");
   }
 }
 
-async function handleFinalizeResult(proposalId) {
+async function handleFinalizeResult(proposalId, btn) {
   if (!state.instance) {
     showToast("FHE not ready", "error");
     return;
   }
+
+  setButtonLoading(btn, true, "🔓 Decrypt & Finalize");
+
   showToast("🔓 Requesting decryption from Zama KMS...", "info");
   try {
     const { clearYes, clearNo } = await finalizeResult(
@@ -235,6 +248,8 @@ async function handleFinalizeResult(proposalId) {
     else if (msg.includes("InvalidKMS"))
       showToast("KMS proof verification failed", "error");
     else showToast("Finalize failed: " + msg, "error");
+  }finally{
+    setButtonLoading(btn, false, "🔓 Decrypt & Finalize");
   }
 }
 
