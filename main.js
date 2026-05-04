@@ -172,25 +172,33 @@ async function handleCreateProposal() {
   }
 }
 
-async function handleVote(proposalId, voteYes, btn) {
+async function handleVote(proposalId, voteYes, container) {
   if (!state.instance) {
     showToast("FHE not ready — wait a moment and try again", "error");
     return;
   }
 
-  setButtonLoading(btn, true, voteYes ? "🔐 Vote YES" : "🔐 Vote NO");
+  // 🔒 Disable BOTH buttons immediately
+  const buttons = container.querySelectorAll("button");
+  buttons.forEach((b) => {
+    b.disabled = true;
+    b.innerHTML = '<span class="spinner"></span>';
+  });
 
-  showToast("🔐 Initializing FHE encryption...", "info");
   try {
     showToast("🔐 Encrypting your vote locally...", "info");
+
     await castVote(proposalId, voteYes, contractAddress);
+
     showToast(
       "✅ Vote cast! Your ballot is encrypted and permanently secret.",
       "success",
     );
+
     await loadProposals();
   } catch (e) {
     const msg = e.reason || e.message || "";
+
     if (msg.includes("AlreadyVoted"))
       showToast("You already voted on this proposal", "error");
     else if (msg.includes("WrongStatus"))
@@ -200,8 +208,11 @@ async function handleVote(proposalId, voteYes, btn) {
     else if (msg.includes("SenderNotAllowed"))
       showToast("ACL error — check contract address is correct", "error");
     else showToast("Vote failed: " + msg, "error");
-  }finally{
-    setButtonLoading(btn, false, voteYes ? "🔐 Vote YES" : "🔐 Vote NO");
+  } finally {
+    // 🔓 Re-enable buttons ONLY if still on same UI
+    buttons[0].innerHTML = "🔐 Vote YES";
+    buttons[1].innerHTML = "🔐 Vote NO";
+    buttons.forEach((b) => (b.disabled = false));
   }
 }
 

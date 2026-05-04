@@ -112,19 +112,24 @@ export function renderProposalCard(p, i, voted, onVote, onMark, onFinalize) {
     const yesBtn = document.createElement("button");
     yesBtn.className = "btn btn-yes";
     yesBtn.textContent = "🔐 Vote YES";
-    yesBtn.addEventListener("click", (e) => {
-      onVote(i, true, yesBtn); // pass button
-    });
+    
 
     const noBtn = document.createElement("button");
     noBtn.className = "btn btn-no";
     noBtn.textContent = "🔐 Vote NO";
-    noBtn.addEventListener("click", (e) => {
-      onVote(i, false, noBtn); // pass button
-    });
+    
 
     const row = document.createElement("div");
     row.className = "vote-actions";
+
+    yesBtn.addEventListener("click", (e) => {
+      onVote(i, true, row); 
+    });
+    
+    noBtn.addEventListener("click", (e) => {
+      onVote(i, false, row); 
+    });
+
     row.appendChild(yesBtn);
     row.appendChild(noBtn);
     actionsDiv.appendChild(row);
