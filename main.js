@@ -21,7 +21,7 @@ import { showToast, setButtonLoading, renderProposalCard } from "./ui.js";
 
 // ── Contract address ──────────────────────────────────────────────────────────
 // PASTE YOUR DEPLOYED SEPOLIA CONTRACT ADDRESS HERE
-let contractAddress = "0x7D323C83D420f78CBb786c2fdA5F616c6Ea46770";
+let contractAddress = "0xE0E9B823C3f307ffDbD4D494dC1baBDF4DA2254F";
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const connectBtn = document.getElementById("connectBtn");

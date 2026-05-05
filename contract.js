@@ -8,7 +8,7 @@ import { Contract } from "ethers";
 import { state } from "./wallet.js";
 
 // ── Contract Address ──────────────────────────────────────────────────────
-export const CONTRACT_ADDRESS = "0x7D323C83D420f78CBb786c2fdA5F616c6Ea46770";
+export const CONTRACT_ADDRESS = "0xE0E9B823C3f307ffDbD4D494dC1baBDF4DA2254F";
 
 // ── ABI ───────────────────────────────────────────────────────────────────
 const ABI = [
