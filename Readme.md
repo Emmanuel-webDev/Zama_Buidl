@@ -227,7 +227,7 @@ Make sure:
 
 - 🌐 Zama Docs: https://docs.zama.org  
 - 💻 Zama SDK: https://github.com/zama-ai/sdk  
-- 📜 Contract (Sepolia): 0xE0E9B823C3f307ffDbD4D494dC1baBDF4DA2254F
+- 📜 Contract (Sepolia): 0xE0E9B823C3f307ffDbD4D494dC1baBDF4DA2254F || No access control (0xe9c66d48525f828A77A8e2d8A97bEF56B8d7d70f)
 - 🖥️ Frontend: https://confidentialvotedao.vercel.app/
 - 📦 Repo: *This repository*
 
