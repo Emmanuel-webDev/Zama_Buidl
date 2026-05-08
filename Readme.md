@@ -227,8 +227,8 @@ Make sure:
 
 - 🌐 Zama Docs: https://docs.zama.org  
 - 💻 Zama SDK: https://github.com/zama-ai/sdk  
-- 📜 Contract (Sepolia)
-- 🖥️ Frontend: *Add your deployed URL*  
+- 📜 Contract (Sepolia): 0xE0E9B823C3f307ffDbD4D494dC1baBDF4DA2254F
+- 🖥️ Frontend: https://confidentialvotedao.vercel.app/
 - 📦 Repo: *This repository*
 
 ---
