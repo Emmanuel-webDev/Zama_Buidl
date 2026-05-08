@@ -8,24 +8,658 @@ import { Contract } from "ethers";
 import { state } from "./wallet.js";
 
 // ── Contract Address ──────────────────────────────────────────────────────
-export const CONTRACT_ADDRESS = "0xE0E9B823C3f307ffDbD4D494dC1baBDF4DA2254F";
+export const CONTRACT_ADDRESS = "0xe9c66d48525f828A77A8e2d8A97bEF56B8d7d70f";
 
 // ── ABI ───────────────────────────────────────────────────────────────────
 const ABI = [
-  "function proposalCount() view returns (uint256)",
-  "function owner() view returns (address)",
-  "function members(address) view returns (bool)",
-  "function hasVoted(uint256, address) view returns (bool)",
-  "function getProposal(uint256) view returns (string,string,address,uint256,uint256,uint8,bool,uint64,uint64,uint256)",
-  "function getEncryptedHandles(uint256) view returns (bytes32,bytes32)",
-  "function isVotingActive(uint256) view returns (bool)",
-  "function createProposal(string,string) returns (uint256)",
-  "function castVote(uint256,bytes32,bytes)",
-  "function markResultDecryptable(uint256)",
-  "function finalizeResult(uint256,uint64,uint64,bytes)",
-  "function addMember(address)",
-  "function removeMember(address)",
-  "function transferOwnership(address)",
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "member",
+        type: "address",
+      },
+    ],
+    name: "addMember",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "AlreadyMember",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "AlreadyVoted",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+      {
+        internalType: "externalEbool",
+        name: "encryptedVote",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "inputProof",
+        type: "bytes",
+      },
+    ],
+    name: "castVote",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "title",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+    ],
+    name: "createProposal",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint64",
+        name: "clearYesVotes",
+        type: "uint64",
+      },
+      {
+        internalType: "uint64",
+        name: "clearNoVotes",
+        type: "uint64",
+      },
+      {
+        internalType: "bytes",
+        name: "publicDecryptProof",
+        type: "bytes",
+      },
+    ],
+    name: "finalizeResult",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "InvalidKMSSignatures",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+    ],
+    name: "markResultDecryptable",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "NotAMember",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotMember",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotOwner",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ProposalNotFound",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "QuorumNotMet",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "member",
+        type: "address",
+      },
+    ],
+    name: "removeMember",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "handle",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "SenderNotAllowedToUseHandle",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "VotingNotActive",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "VotingStillActive",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "WrongStatus",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ZamaProtocolUnsupported",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "member",
+        type: "address",
+      },
+    ],
+    name: "MemberAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "member",
+        type: "address",
+      },
+    ],
+    name: "MemberRemoved",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "title",
+        type: "string",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "proposer",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "endTime",
+        type: "uint256",
+      },
+    ],
+    name: "ProposalCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32[]",
+        name: "handlesList",
+        type: "bytes32[]",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "abiEncodedCleartexts",
+        type: "bytes",
+      },
+    ],
+    name: "PublicDecryptionVerified",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "encYesHandle",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "encNoHandle",
+        type: "bytes32",
+      },
+    ],
+    name: "ResultDecryptable",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "yesVotes",
+        type: "uint64",
+      },
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "noVotes",
+        type: "uint64",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "passed",
+        type: "bool",
+      },
+    ],
+    name: "ResultFinalized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "voter",
+        type: "address",
+      },
+    ],
+    name: "VoteCast",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "confidentialProtocolId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+    ],
+    name: "getEncryptedHandles",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "encYesHandle",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "encNoHandle",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+    ],
+    name: "getProposal",
+    outputs: [
+      {
+        internalType: "string",
+        name: "title",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "proposer",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "startTime",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "endTime",
+        type: "uint256",
+      },
+      {
+        internalType: "enum ConfidentialVoteDAO.ProposalStatus",
+        name: "status",
+        type: "uint8",
+      },
+      {
+        internalType: "bool",
+        name: "passed",
+        type: "bool",
+      },
+      {
+        internalType: "uint64",
+        name: "clearYesVotes",
+        type: "uint64",
+      },
+      {
+        internalType: "uint64",
+        name: "clearNoVotes",
+        type: "uint64",
+      },
+      {
+        internalType: "uint256",
+        name: "totalVoters",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "voter",
+        type: "address",
+      },
+    ],
+    name: "hasVoted",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "proposalId",
+        type: "uint256",
+      },
+    ],
+    name: "isVotingActive",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "members",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "MIN_QUORUM",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "proposalCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "proposals",
+    outputs: [
+      {
+        internalType: "string",
+        name: "title",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "proposer",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "startTime",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "endTime",
+        type: "uint256",
+      },
+      {
+        internalType: "euint64",
+        name: "encYesVotes",
+        type: "bytes32",
+      },
+      {
+        internalType: "euint64",
+        name: "encNoVotes",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint64",
+        name: "clearYesVotes",
+        type: "uint64",
+      },
+      {
+        internalType: "uint64",
+        name: "clearNoVotes",
+        type: "uint64",
+      },
+      {
+        internalType: "enum ConfidentialVoteDAO.ProposalStatus",
+        name: "status",
+        type: "uint8",
+      },
+      {
+        internalType: "bool",
+        name: "passed",
+        type: "bool",
+      },
+      {
+        internalType: "uint256",
+        name: "totalVoters",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "VOTING_DURATION",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
 
 // ── Helpers: Read vs Write ─────────────────────────────────────────────────

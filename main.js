@@ -10,18 +10,18 @@ import {
   getProposalCount,
   getProposal,
   hasVoted,
-  getMemberStatus,
+  //getMemberStatus,
   createProposal,
   castVote,
   markResultDecryptable,
   finalizeResult,
-  addMember,
+  //addMember,
 } from "./contract.js";
 import { showToast, setButtonLoading, renderProposalCard } from "./ui.js";
 
 // ── Contract address ──────────────────────────────────────────────────────────
 // PASTE YOUR DEPLOYED SEPOLIA CONTRACT ADDRESS HERE
-let contractAddress = "0xE0E9B823C3f307ffDbD4D494dC1baBDF4DA2254F";
+let contractAddress = "0xe9c66d48525f828A77A8e2d8A97bEF56B8d7d70f";
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const connectBtn = document.getElementById("connectBtn");
@@ -34,6 +34,7 @@ const proposalsListEl = document.getElementById("proposalsList");
 const createBtnEl = document.getElementById("createBtn");
 const refreshBtnEl = document.getElementById("refreshBtn");
 const addMemberBtnEl = document.getElementById("addMemberBtn");
+addMemberBtnEl.disabled = true; // Disable member management for demo submission
 const newMemberAddrEl = document.getElementById("newMemberAddr");
 const propTitleEl = document.getElementById("propTitle");
 const propDescEl = document.getElementById("propDesc");
@@ -47,6 +48,7 @@ function updateConnectedUI() {
   fheStatusEl.value = state.instance ? "✅ FHE Ready" : "⏳ Initializing...";
 }
 
+/* Disabled for demo submission - uncomment to enable in your own project
 async function updateMembership() {
   if (
     !state.address ||
@@ -67,6 +69,7 @@ async function updateMembership() {
     memberStatusEl.value = "Unable to check";
   }
 }
+*/
 
 // ── Proposals ─────────────────────────────────────────────────────────────────
 async function loadProposals() {
@@ -122,7 +125,7 @@ async function handleConnect() {
   try {
     await connect();
     updateConnectedUI();
-    await updateMembership();
+    //await updateMembership();
     if (contractAddress !== "0x0000000000000000000000000000000000000000") {
       await loadProposals();
     }
@@ -222,7 +225,7 @@ async function handleMarkDecryptable(proposalId, btn) {
     return;
   }
 
-    setButtonLoading(btn, true, "🔓 Close & Mark Decryptable");
+  setButtonLoading(btn, true, "🔓 Close & Mark Decryptable");
 
   showToast("Closing voting...", "info");
   try {
@@ -231,7 +234,7 @@ async function handleMarkDecryptable(proposalId, btn) {
     await loadProposals();
   } catch (e) {
     showToast("Failed: " + (e.reason || e.message), "error");
-  }finally{
+  } finally {
     setButtonLoading(btn, false, "🔓 Close & Mark Decryptable");
   }
 }
@@ -259,11 +262,12 @@ async function handleFinalizeResult(proposalId, btn) {
     else if (msg.includes("InvalidKMS"))
       showToast("KMS proof verification failed", "error");
     else showToast("Finalize failed: " + msg, "error");
-  }finally{
+  } finally {
     setButtonLoading(btn, false, "🔓 Decrypt & Finalize");
   }
 }
 
+/* Disabled for demo submission - uncomment to enable in your own project
 async function handleAddMember() {
   if (!state.signer) {
     showToast("Connect wallet first", "error");
@@ -280,9 +284,10 @@ async function handleAddMember() {
     newMemberAddrEl.value = "";
     await updateMembership();
   } catch (e) {
-    showToast("Failed: Not an Admin" , "error");
+    showToast("Failed: Not an Admin", "error");
   }
 }
+*/
 
 function handleContractAddressChange() {
   const val = contractInput.value.trim();
@@ -291,7 +296,7 @@ function handleContractAddressChange() {
     resetContract();
     if (state.signer) {
       loadProposals();
-      updateMembership();
+      //updateMembership();
     }
   }
 }
@@ -300,7 +305,7 @@ function handleContractAddressChange() {
 connectBtn.addEventListener("click", handleConnect);
 createBtnEl.addEventListener("click", handleCreateProposal);
 refreshBtnEl.addEventListener("click", loadProposals);
-addMemberBtnEl.addEventListener("click", handleAddMember);
+//addMemberBtnEl.addEventListener("click", handleAddMember);
 contractInput.addEventListener("change", handleContractAddressChange);
 
 registerListeners({
@@ -324,7 +329,7 @@ if (contractAddress !== "0x0000000000000000000000000000000000000000") {
 autoConnect().then((connected) => {
   if (connected) {
     updateConnectedUI();
-    updateMembership();
+    //updateMembership();
     loadProposals();
   }
 });
